@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    
+    <link rel="stylesheet" href="css/styless.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.6/dist/css/autoComplete.min.css">
+    
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.6/dist/autoComplete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    
+    <title>Search by country</title>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-nav">
+            <li class="logo">
+                <a href="index.html" class="nav-link">
+                    <img src="img/covid-2-01.svg" alt="covid logo" class="covid-logo">
+                    <span class="link-text">covsearch</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home fa-primary fa-secondary nav-icon"></i>
+                    <span class="link-text">Home</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="search-by-country.html" class="nav-link">
+                    <i class="fas fa-flag fa-primary fa-secondary nav-icon"></i>
+                    <span class="link-text active-link">Search</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="contact.html" class="nav-link">
+                    <i class="fas fa-envelope fa-primary fa-secondary nav-icon"></i>
+                    <span class="link-text">Contact</span>
+                </a>
+            </li>   
+        </ul>
+        <div class="copyright-div">
+            <p class="copyright">Copyright &copy; 2021</p>
+        </div>
+    </nav>
+    <!-- Nav Bar -->
+    <main>
+        <!-- HERO -->
+        <div id="first-part" class="first-part">
+            <h1>Search By Country</h1>
+        </div>
+        <div id="search-section" class="search-section">
+            <input id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="on" autocapitalize="off" maxlength="700"  tabindex="1" class="user-input">
+            <button type="button" id="btn" class="submit-btn">
+                    <i class="fas fa-search search-size"></i>
+            </button> 
+            <div id="input-error" class="input-error">
+                <h6 id="input-error-msg" class="error-msg-text"></h6>
+            </div>
+            
+        </div>
+        
+        <!-- Card and Chart section -->
+        <section id="card-section" class="card-section hidden">
+            <div class="card-1 card">
+                <div class="icon icon-1">
+                    <i class="fas fa-flag card-icon"></i>
+                </div>
+                <div class="box">
+                    <div class="flag-section">
+                    <h3 id="country" class="title-1 card-title">Australia </h3><img src="" alt="" id="flag-image" class="flag"> 
+                    </div>
+                    
+                    <h6>Population: <span id="population"></span></h6>
+                    <h6>Life expentancy: <span id="life-expentancy"></span></h6>
+                    <h6>Capital city: <span id="capital"></span></h6>
+                </div>
+            </div>
+            <div class="card-2 card">
+                <div class="icon icon-2">
+                    <i class="fas fa-virus card-icon"></i>
+                </div>
+                <h3 class="title-2 card-title">Total Nº of cases</h3>
+                <div class="box">
+                    <h6>Confirmed cases:  <span id="confirmed-cases"></span></h6>
+                    <h6>Nº of deaths: <span id="deaths"></span></h6>
+                    <h6>Major Nº of cases: <span id="city-most"></span></h6>
+                </div>
+            </div>
+            <div class="card-3 card">
+                <div class="icon icon-3">
+                    <i class="fas fa-plus card-icon"></i>
+                </div>
+                <h3 class="title-3 card-title">New cases</h3>
+                <div class="box">
+                    <h6>New total cases:  <span id="new-cases"></span></h6>
+                    <h6 >New total deaths: <span id="new-deaths"></span></h6>
+                    <h6>Information from <span id="info-update"></span></h6>
+                </div>
+            </div>
+            <div class="card-4 card">
+                <div class="icon icon-4">
+                    <i class="fas fa-syringe card-icon"></i>
+                </div>
+                <h3 class="title-4 card-title">Vaccination</h3>
+                <div class="box">
+                    <h6>Administered: <span id="administered"></span></h6>
+                    <h6>People vaccinated: <span id="vaccinated"></span></h6>
+                    <h6>People partially vaccinated: <span id="partially-vacc"></span></h6>
+                </div>
+            </div>
+            <!-- Bar chart -->
+            <div id="newChart" class="graph-section">
+                <h6 id="message-1" class="error-msg msg-1"></h6>
+                <canvas id="myChart" width="400" height="150"></canvas>
+            </div>
+            <!-- Pie chart -->
+            <div id="divpieChart" class="pie-chart-section">
+                <h6 id="message-2" class="error-msg msg-2"></h6>
+                <canvas id="pieChart"></canvas>
+            </div>
+
+            <!-- Line chart -->
+            <div id="dive-line-chart" class="pie-chart-section custom">
+                <h6 id="message-3" class="error-msg msg-3"></h6>
+                <canvas id="line-chart"></canvas>
+            </div>
+
+            <div id="div-line-deaths" class="pie-chart-section custom">
+                <h6 id="message-4" class="error-msg msg-4"></h6>
+                <canvas id="line-chart-deaths"></canvas>
+            </div>
+            <div class="footer"></div>
+            
+
+        </section>
+        
+        
+
+    </main>
+    
+
+    <script src="js/main.js"></script>
+    
+</body>
+</html>       
