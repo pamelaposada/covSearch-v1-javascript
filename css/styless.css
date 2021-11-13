@@ -540,9 +540,11 @@ h6 {
   /* Chart section */
   .graph-section {
     height: 250px;
+    margin-right: 20px;
   }
   .pie-chart-section {
     height: 300px;
+    margin-right: 20px;
   }
   /* Index page */
   .intro-index {
@@ -754,6 +756,14 @@ h6 {
   }
   .bt-start-search {
     font-size: 13px;
+  }
+  .graph-section {
+    height: 250px;
+    margin-right: 20px;
+  }
+  .pie-chart-section {
+    height: 300px;
+    margin-right: 20px;
   }
 }
 @media only screen and (min-width: 721px) and (max-width: 1023px) {
