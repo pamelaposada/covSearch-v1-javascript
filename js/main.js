@@ -440,10 +440,10 @@ function capitalizestring(string) {
 function createFlag(abb) {
     
     if (abb === undefined){
-        flagImage.src = `../flags/32/_unknown.png`
+        flagImage.src = `./flags/32/_unknown.png`
         return flagImage
     }else{
-        flagImage.src = `../flags/32/${abb}.png`
+        flagImage.src = `./flags/32/${abb}.png`
         return flagImage
     }
     

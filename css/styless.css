@@ -789,6 +789,9 @@ h6 {
     width: 700px;
     padding-right: 65px;
   }
+  .card {
+    width: 388px;
+  }
 }
 @media only screen and (min-width: 1200px) and (max-width: 1299px) {
   .submit-btn {
@@ -797,6 +800,9 @@ h6 {
   .search-section .user-input {
     width: 700px;
     padding-right: 65px;
+  }
+  .card {
+    width: 515px;
   }
 }
 @media only screen and (min-width: 1300px) and (max-width: 1350px) {
