@@ -8,6 +8,7 @@ const title = document.getElementById('title')
 const flagImage = document.getElementById('flag-image')
 const generalDetails = document.getElementById('general-details')
 const footer = document.getElementById('footer')
+
 // General details of search
 const textCountry = document.getElementById('country')
 const textPopulation = document.getElementById('population')
@@ -25,6 +26,7 @@ const newDeaths = document.getElementById('new-deaths')
 
 // Hidden class
 const showTable = document.querySelector('.hidden')
+
 // Chart DOM variables (DIV charts)
 const newChart = document.getElementById('newChart')
 const divpieChart = document.getElementById('divpieChart')
@@ -39,18 +41,17 @@ const deathsLineChartMesg = document.getElementById('message-4')
 const inputErrorDiv = document.getElementById('input-error')
 const inputErrorMsg = document.getElementById('input-error-msg')
 const errorValueSearched = document.getElementById('error-value')
-// URLs
+
+// API URLs
 const urlTotalCases = 'https://covid-api.mmediagroup.fr/v1/cases?country='
 const urlVaccines = 'https://covid-api.mmediagroup.fr/v1/vaccines?country='
 const urlConfirmed = 'https://covid-api.mmediagroup.fr/v1/history?country='
 
-// Other variables
 
+// 1. Filtering results
+// Filter the results and display availables countries in a list while user types a valid search (valid search = coutry names inside an array)
 
-
-
-// Display availables countries in a list while user types
-//1. Create an array by extracting all the available countries from the API
+//1.a Create an array by extracting all available countries from the API
 
 const countryList = ['United States']
 async function loadCountries() {
@@ -64,7 +65,7 @@ async function loadCountries() {
 loadCountries()
 
 // Autocomplete.js
-//Implement autocomplete.js to display a list of available countries while the user types.
+//1.b Implement autocomplete.js to display a list of available countries while the user types.
 const autoCompleteJS = new autoComplete({
     selector: "#autoComplete",
     placeHolder: "Type your country",
@@ -102,13 +103,12 @@ const autoCompleteJS = new autoComplete({
 });
 autoCompleteJS.init();
 
+// 2. Create an event by clicking the search button. The user can display the search results by country and connect to the API data.
 
-
-// Search Bottom - Create Event
 submitBtn.addEventListener('click', clickBtn)
 function clickBtn() {
 
-    // User search
+    //2.a Limit the user search. The search will be displayed on the screen just if the value matches the CountryList array
     let search = inputValue.value
     inputErrorDiv.style.display = "none"
     let displayTable = 0
@@ -122,20 +122,19 @@ function clickBtn() {
     }
     const displaySearch = displayTable == 1 ? showTable.style.display = "flex" : showTable.style.display = "none"
     
-
+    // Add United States as a valid search (It appears as US in the API)
     if (search === "United States") {
         search = "US"
     } else {
         search = inputValue.value
         // console.log(search)
     }
-    const startSeach = (`${urlTotalCases}${search}`)
-    // console.log(startSeach)
 
-    // Conect to urlTotalCases
+    // 2.b connect to https://covid-api.mmediagroup.fr/v1/cases?country={country}
+    const startSeach = (`${urlTotalCases}${search}`)
     setupChart()
     async function loadCovid() {
-
+        // 2.b.1 Define response and content(answer) variables. Then loop the content to get the data needed. Do this by using a try statement.
         try{
             const response = await fetch(startSeach)
             const content = await response.json()
@@ -164,14 +163,15 @@ function clickBtn() {
             const affectedCity = findSecondLargest(highestValue, regions)
             cityMost.innerHTML = `${affectedCity[1]} \n - ${affectedCity[0]} cases`
              
+            // Add the country's flag by using the createFlag funtion
             createFlag(countryAbb[0])
-            // console.log(countryAbb[0])
             
-
+            // Test data 
             // console.log(totalDeaths[0], countryAbb[0], country[0], population[0], expentancy[0], capital[0], covCases[0])
             return { regions, covCases, totalDeaths, countryAbb, country, population, expentancy, capital }
         }
         catch (err) {
+            // 2.b.2 Define possible errors. Then, generate a message in case the API response, content or other error happens.
             if (err.response){
                 console.log(`Response from API has failed: ${err}`)
                 barChartMessage.innerHTML = "This information is not available at the moment. Try later please."
@@ -184,7 +184,7 @@ function clickBtn() {
         }
         
     }
-    //Set up chart, define chart data and print it 
+    //2.b.3 Extract the data needed from loadCovid function and print it into the DOM
     async function setupChart() {
         const covidData = await loadCovid()
         // console.log(covidData.regions)
@@ -194,10 +194,8 @@ function clickBtn() {
         textCapital.innerHTML = `${covidData.capital[0]}`
         confirmedCases.innerHTML = `${covidData.covCases[0]}`
         deaths.innerHTML = `${covidData.totalDeaths[0]}`
-        // console.log(`Display table = ${displayTable}`)
 
-
-        // Create bar chart
+        //2.b.4 Set up a bar chart using the data extracted from startSearch and print the data in the DOM
         resetCanvas()
         const canvas = document.getElementById('myChart').getContext('2d')
         var myChart = new Chart(canvas, {
@@ -224,12 +222,15 @@ function clickBtn() {
         }); myChart.clear() //Clear data each time a new search is made
 
     }
+
+    // 2.c Define the arrays where the data from the API will be pushed. Then connect to https://covid-api.mmediagroup.fr/v1/vaccines?country={country} 
+
     let administered = []
     let partiallyVac = []
     let vaccinated = []
     let population2 = []
 
-    // Conect to urlVaccines
+    // 2.c.1 Start the asynchronous function to connect with the API and define response and content(answer) variables. Then, loop the content and return the needed data.
     loadVaccines()
     async function loadVaccines() {
         try {
@@ -241,18 +242,18 @@ function clickBtn() {
                 vaccinated.push(value.people_vaccinated)
                 population2.push(value.population)
             }
-            // fill the values on the respective Dom variables
+            //2.c.2 Print the values on the respective Dom variables
             vaccAdministered.innerHTML = administered[0]
             pVaccinated.innerHTML = vaccinated[0]
             pPartiallyVac.innerHTML = partiallyVac[0]
     
     
-            //Define chart data
-            //1. People unvaccinated = population - vaccinated
+            //2.c.3 Define chart data
+            //People unvaccinated = population - vaccinated
             let unvaccinated = (Number(population2[0]) - Number(vaccinated[0]))
             // console.log(unvaccinated)
     
-            //Set up pie chart
+            //2.c.4 Set up a pie chart using vaccinated and unvaccinated data
             resetCanvasPie()
             const canvaspie = document.getElementById('pieChart')
             var chartPie = new Chart(canvaspie, {
@@ -279,6 +280,7 @@ function clickBtn() {
             return [administered[0], partiallyVac[0], vaccinated[0]]
             
         } catch (err) {
+            // 2.c.5 Define possible errors. Then, generate a message in case the API response, content or other error happens.
             if (err.response){
                 console.log(`Response from API has failed: ${err}`)
                 barChartMessage.innerHTML = "This information is not available at the moment. Try later please."
@@ -292,24 +294,24 @@ function clickBtn() {
         
 
     }
+
+    // 2.d Define the arrays where the data from the API will be pushed. Then connect to https://covid-api.mmediagroup.fr/v1/history?country={country}&status=confirmed
     ConfirmedCasesDates()
-    // Define array variables to extract data
     let dataDates = []
     let numCases = []
     let increments = []
 
-
-    // Connect to urlConfirmed
+    // 2.d.1 Connect to the API and define response and content variables
     async function ConfirmedCasesDates() {
         try{
-            casesLineChartMesg.style.display = "none"
+            casesLineChartMesg.style.display = "none"// ensure that the error message doesn't get displayed in case of non-error
             const response = await fetch(`${urlConfirmed}${search}&status=confirmed`)
             const content = await response.json()
             const entries = Object.entries(content.All.dates)
             reduceArray(entries)
             entries.reverse() //reverse data to organise data from earliest to latest case
 
-            //loop the object entries and get total cases per day. To get specific num of cases per day,  push to increments the current total num of cases less the previous total num. of cases. 
+            //2.d.2 Loop the object entries and get total cases per day. To get specific num of cases per day,  push to increments the current total num of cases minus the previous total num. of cases. 
             for (let i = 1; i < entries.length; i++) {
                 const [date, value] = entries[i]
                 const [nextDate, previousValue] = entries[i - 1] ?? entries[i]
@@ -318,8 +320,12 @@ function clickBtn() {
                 increments.push(value - previousValue)
 
             }
-            let update = dataDates[dataDates.length - 1] //last update of the info
-            let newCases = increments[increments.length - 1] //last index of increments = num. of new cases
+            //2.d.3 Get the last update of the data
+            let update = dataDates[dataDates.length - 1] 
+
+            //Define newCases. Last index of increments = num. of new cases
+            let newCases = increments[increments.length - 1]
+            // Print the data into the DOM 
             infoUpdated.innerHTML = reverseDate(update)
             newCasesInfo.innerHTML = newCases
 
@@ -330,6 +336,7 @@ function clickBtn() {
             // console.log(update)
             // console.log(newCases)
 
+        //2.d.4 Set up a line chart using dataDates and increments arrays
             resetCanvasLine()
             const lineChart = document.getElementById('line-chart')
 
@@ -349,6 +356,7 @@ function clickBtn() {
 
         }
         catch (err) {
+            // 2.d.5 Define possible errors. Then, generate a message in case the API response, content u other error happens
             if (err.response){
                 console.log(`Response from API has failed: ${err}`)
                 barChartMessage.innerHTML = "This information is not available at the moment. Try later please."
@@ -362,12 +370,16 @@ function clickBtn() {
         
     }
 
+    // 2.e Define the arrays where the data from the API will be pushed. Then connect to https://covid-api.mmediagroup.fr/v1/history?country={country}&status=deaths
     let deathDates = []
     let lastDeaths = []
     ConfirmedDeaths()
     async function ConfirmedDeaths() {
         try{
-            deathsLineChartMesg.style.display = "none"
+
+            // 2.e.1 Define response and content variables and loop the extracted data from the API. Then push the data into the arrays.
+            
+            deathsLineChartMesg.style.display = "none" // ensure that the error message doesn't get displayed in case of non-error
             const response = await fetch(`${urlConfirmed}${search}&status=deaths`)
             const content = await response.json()
             const objectEntries = Object.entries(content.All.dates)
@@ -382,10 +394,12 @@ function clickBtn() {
             }
             let lastDeathcase = lastDeaths[lastDeaths.length - 1]
             newDeaths.innerHTML = lastDeathcase
+            // Test data
             // console.log(lastDeaths)
             // console.log(lastDeathcase)
             // console.log(deathDates)
 
+            // 2.e.2 Set up a line chart using deathDates and lastDeaths arrays
             resetCanvasLineDeaths()
             const lineChartDeaths = document.getElementById('line-chart-deaths')
             var tensionChartDeaths = new Chart(lineChartDeaths, {
@@ -400,10 +414,9 @@ function clickBtn() {
                         tension: 0.1
                     }]
                 },
-
-
             }); tensionChartDeaths.clear() //Clear data each time a new search is made
         }catch (err) {
+            // 2.e.3 Define the possible errors. Then, generate a message in case the API response, content u other error happens
             if (err.response){
                 console.log(`Response from API has failed: ${err}`)
                 barChartMessage.innerHTML = "This information is not available at the moment. Try later please."
@@ -414,15 +427,12 @@ function clickBtn() {
                 console.log(err)
             }
         }
-        
-
     }
-
 }
 
 
 
-
+// 3. Custom functions
 
 //Capitalize the string given by the user
 function capitalizestring(string) {
@@ -434,7 +444,6 @@ function capitalizestring(string) {
     }
     return newString
 }
-
 
 // create a flag of the country
 function createFlag(abb) {
@@ -448,7 +457,6 @@ function createFlag(abb) {
     }
     
 }
-
 
 //Clear the chart's canvas
 function resetCanvas() {
@@ -487,7 +495,7 @@ function resetCanvasLine() {
     return divLineChart
 
 }
-
+//Clear line chart 2
 function resetCanvasLineDeaths() {
 
     document.getElementById('line-chart-deaths').remove()
